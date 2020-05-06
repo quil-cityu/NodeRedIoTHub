@@ -148,7 +148,7 @@ module.exports = function (RED) {
             //Creating connectionString
             //Sample
             //HostName=sample.azure-devices.net;DeviceId=sampleDevice;SharedAccessKey=wddU//P8fdfbSBDbIdghZAoSSS5gPhIZREhy3Zcv0JU=
-            newConnectionString = "HostName=" + node.credentials.hostname + ";DeviceId=" + messageJSON.deviceId + ";SharedAccessKey=" + messageJSON.key
+            newConnectionString = "HostName=" + messageJSON.hostname + ";DeviceId=" + messageJSON.deviceId + ";SharedAccessKey=" + messageJSON.key
 	    if( typeof messageJSON.protocol !== 'undefined'){
             	newProtocol = messageJSON.protocol;
 	    } else {
@@ -305,7 +305,6 @@ module.exports = function (RED) {
     // Registration of the node into Node-RED
     RED.nodes.registerType("azureiothub", AzureIoTHubNode, {
         credentials: {
-            hostname: { type: "text" }
         },
         defaults: {
             name: { value: "Azure IoT Hub" },
