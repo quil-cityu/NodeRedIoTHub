@@ -39,6 +39,7 @@ module.exports = function (RED) {
             if (err) {
                 node.error('Error while trying to send message:' + err.toString());
                 setStatus(node, statusEnum.error);
+                disconnectFromIoTHub(node);
             } else {
                 node.log('Message sent.');
                 node.send({payload: "Message sent."});
@@ -156,7 +157,10 @@ module.exports = function (RED) {
 	    }
 
             // Sending data to Azure IoT Hub Hub using specific connectionString
-            sendMessageToIoTHub(node, messageJSON.data, nodeConfigUpdated(newConnectionString, newProtocol));
+          sendMessageToIoTHub(
+            node, 
+            messageJSON.data,
+            node.nodeConfigUpdated(newConnectionString, newProtocol));
         });
 
         node.on('close', function () {
