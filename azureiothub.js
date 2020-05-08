@@ -157,10 +157,7 @@ module.exports = function (RED) {
 	    }
 
             // Sending data to Azure IoT Hub Hub using specific connectionString
-          sendMessageToIoTHub(
-            node, 
-            messageJSON.data,
-            node.nodeConfigUpdated(newConnectionString, newProtocol));
+          sendMessageToIoTHub(node, messageJSON.data, nodeConfigUpdated(newConnectionString, newProtocol));
         });
 
         node.on('close', function () {
