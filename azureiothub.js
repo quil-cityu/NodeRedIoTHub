@@ -62,7 +62,18 @@ module.exports = function (RED) {
             // Connect the IoT Hub
             connectToIoTHub(node, message);
         } else {
+          if (message) {
             sendData(node, message);
+          } else {
+            client.getTwin(function (twinErr, twin) {
+              if (twinErr) {
+                node.log('could not get twin');
+              } else {
+                node.log('get twin :' + JSON.stringify(twin.properties.desired));
+                node.send({twin: twin.properties.desired});
+              }
+            });
+          }
         }
     };
 
@@ -79,20 +90,20 @@ module.exports = function (RED) {
                 node.log('Connected to Azure IoT Hub.');
                 setStatus(node, statusEnum.connected);
 
+                client.getTwin(function (twinErr, twin) {
+                  if (twinErr) {
+                    node.log('could not get twin');
+                  } else {
+                    node.log('get twin :' + JSON.stringify(twin.properties.desired));
+                    node.send({twin: twin.properties.desired});
+                  }
+                });
+
                 // Check if a message is pending and send it 
                 if (pendingMessage) {
                     node.log('Message is pending. Sending it to Azure IoT Hub.');
                     // Send the pending message
                     sendData(node, pendingMessage);
-                } else {
-                  client.getTwin(function (twinErr, twin) {
-                    if (twinErr) {
-                      node.log('could not get twin');
-                    } else {
-                      node.log('get twin :' + JSON.stringify(twin.properties.desired));
-                      node.send({twin: twin.properties.desired});
-                    }
-                  });
                 }
 
                 client.on('message', function (msg) {
