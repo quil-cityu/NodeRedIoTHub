@@ -85,7 +85,7 @@ module.exports = function (RED) {
                   } else {
                     node.log('get twin :');
                     node.log(JSON.stringify(twin));
-                    node.send({twin});
+                    node.send({twin: twin.properties.desired});
                   }
                 });
 
