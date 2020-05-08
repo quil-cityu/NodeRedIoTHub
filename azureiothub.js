@@ -279,9 +279,11 @@ module.exports = function (RED) {
         var node = this;
 
         node.on('input', function (msg) {
-            var registry = Registry.fromConnectionString(node.credentials.connectionString);
+            messageJSON = msg.payload;
+            connectionString = "HostName=" + messageJSON.hostname + ";DeviceId=" + messageJSON.deviceId + ";SharedAccessKey=" + messageJSON.key
+            var registry = Registry.fromConnectionString(connectionString);
 
-            if( typeof msg.payload === "string" ) var query = registry.createQuery("SELECT * FROM devices WHERE deviceId ='" + msg.payload + "'");
+            if( typeof msg.payload === "string" ) var query = registry.createQuery("SELECT * FROM devices WHERE deviceId ='" + messageJSON.deviceId + "'");
             else var query = registry.createQuery("SELECT * FROM devices");
 
             query.nextAsTwin( function(err, results){
@@ -334,7 +336,6 @@ module.exports = function (RED) {
 
     RED.nodes.registerType("azureiothubdevicetwin", AzureIoTHubDeviceTwin, {
         credentials: {
-            connectionString: { type: "text" }
         },
         defaults: {
             name: { value: "Azure IoT Hub Device Twin" }
