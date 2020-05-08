@@ -80,6 +80,16 @@ module.exports = function (RED) {
                 node.log('Connected to Azure IoT Hub.');
                 setStatus(node, statusEnum.connected);
 
+                client.getTwin(function (twinErr, twin) {
+                  if (twinErr) {
+                    node.log('could not get twin');
+                  } else {
+                    node.log('get twin :');
+                    node.log(JSON.stringify(twin));
+                    node.send({twin});
+                  }
+                });
+
                 // Check if a message is pending and send it 
                 if (pendingMessage) {
                     node.log('Message is pending. Sending it to Azure IoT Hub.');
